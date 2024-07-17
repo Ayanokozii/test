@@ -32,7 +32,7 @@ class Config:
     DEFAULT_LEAVE_MSG = os.getenv("LEAVE_MSG", "By {user},\nSee You Again 👋\n\nFrom **{title}**")
 
     # User client config
-    SESSION = os.getenv("SESSION", "BQFPq6kAjmFvcw6xRXiW_PyyWvgO2a02loU2spN9dZiV6HnvuE7E0IypIabryzpbs7CR_sd8HMc6z02j0KBpb3_XIxRfESI0q7SllpVN5h6f67t-u4AcEZUeqBPjynh6m0p4Esz68rpTeym24vV70UapLW6YdYdi0-hSc-rtVn2d2LerbLTPjTPXbqya2EmyPCBrYsZrXMfVQ2gnTqcy1FTaasHMQTkmu58vTm8hPETe-kZfQvZVRs9a586su1NXJiyYqCR_hl9nsBar8Jhv2-e3fT_OHQRTyR4Si3JGmCPbvEATRJShYejVqk4IrWLNCpK_2oFjRWZMjYfHrbcvBhMT_vKpQgAAAAGd_UK4AA")  # ⚠️ Required
+    SESSION = os.getenv("SESSION", "BQGpTXQAWQj7skbUYWJG68v_k91mlNI87pQCLM-fbIwpJy7SHfkOvUjTUumhYW-kJpgmf9JLY68qg_IAp_i5XQXI4cB5FNy_vYyc5VcAnzt7sze0TC5yh-4dPHtwXAMDdAlt2ZemBCGow9J4DXsQ5d0JcxdOARLqtsW8u_d__0GSVPpLSFftf179T6KzWCHRTYOfx7NmsSyysg3MuCP0j2jT0iFXSmoS_4mHJ49JLaFxB-Ln2-rHh-Sovd_baZ3-6F_c-YG7GhfdLyn7iHKrn5SeTskmczV4geih58cD9RBcxykpKkbpvcXBV8XYfSuCKZF3zKpe-2qY59QHmhTO6ikkTW_jEgAAAAGruX5VAA")  # ⚠️ Required
 
     # Webhook configuration
     WEBHOOK = bool(os.getenv("WEBHOOK", True))
