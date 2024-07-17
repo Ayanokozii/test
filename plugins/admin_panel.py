@@ -3,7 +3,6 @@ from helper.database import db
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid
-from pyromod.exceptions import ListenerTimeout
 import os
 import sys
 import time
@@ -81,9 +80,6 @@ async def send_msg(user_id, message):
     except PeerIdInvalid:
         logger.info(f"{user_id} : User ID invalid")
         return 400
-    except ListenerTimeout:
-        logger.error(f"{user_id} : Listener timeout")
-        return 500
     except Exception as e:
         logger.error(f"{user_id} : {e}")
         return 500
@@ -138,8 +134,6 @@ async def handle_accept_pending_request(bot: Client, update: CallbackQuery):
             except Exception as e:
                 logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}: {type(e).__name__}, {e}")
                 break
-    except ListenerTimeout:
-        logger.error("Listener timeout occurred while accepting join requests.")
     finally:
         await ms.delete()
         await update.message.reply_text(f"**Task Completed** ✓ **Approved ✅ All Pending Join Requests**")
@@ -161,8 +155,6 @@ async def handle_decline_pending_request(bot: Client, update: CallbackQuery):
             except Exception as e:
                 logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}: {type(e).__name__}, {e}")
                 break
-    except ListenerTimeout:
-        logger.error("Listener timeout occurred while declining join requests.")
     finally:
         await ms.delete()
         await update.message.reply_text("**Task Completed** ✓ **Declined ❌ All The Pending Join Requests**")
