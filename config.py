@@ -16,8 +16,8 @@ class Config:
     """
 
     # Pyro client config
-    API_ID = os.getenv("API_ID", "21998505")  # ⚠️ Required
-    API_HASH = os.getenv("API_HASH", "2ceae7fd0a32dcdb44561c7a3edebb53")  # ⚠️ Required
+    API_ID = os.getenv("API_ID", "21189715")  # ⚠️ Required
+    API_HASH = os.getenv("API_HASH", "988a9111105fd2f0c5e21c2c2449edfd")  # ⚠️ Required
     BOT_TOKEN = os.getenv("BOT_TOKEN", "7355530279:AAEwwJfrtLpBZPX3AJB-oeoI5u_gJPWuT9U")  # ⚠️ Required
 
     # Database config
