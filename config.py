@@ -18,7 +18,7 @@ class Config:
     # Pyro client config
     API_ID = os.getenv("API_ID", "21189715")  # ⚠️ Required
     API_HASH = os.getenv("API_HASH", "988a9111105fd2f0c5e21c2c2449edfd")  # ⚠️ Required
-    BOT_TOKEN = os.getenv("BOT_TOKEN", "7355530279:AAEwwJfrtLpBZPX3AJB-oeoI5u_gJPWuT9U")  # ⚠️ Required
+    BOT_TOKEN = os.getenv("BOT_TOKEN", "7044609105:AAEbL7gi84MMfESHFnsoSBsHVVyHNB1IQCo")  # ⚠️ Required
 
     # Database config
     DB_URL = os.getenv("DB_URL", "mongodb+srv://ayanosuvii0925:subhichiku123@cluster0.uw8yxkl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")  # ⚠️ Required
