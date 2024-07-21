@@ -2,6 +2,10 @@ import datetime
 import motor.motor_asyncio
 from config import Config
 from helper.utils import send_log
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class Database:
@@ -79,93 +83,136 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('bool_welc', None)
 
-    async def set_bool_leav(self, user_id, boo_leav):
-        await self.col.update_one({'id': int(user_id)}, {'$set': {'bool_leav': boo_leav}})
+    async def set_bool_leav(self, user_id, bool_leav):
+        await self.col.update_one({'id': int(user_id)}, {'$set': {'bool_leav': bool_leav}})
 
     async def get_bool_leav(self, id):
         user = await self.col.find_one({'id': int(id)})
         return user.get('bool_leav', None)
 
     async def set_admin_channel(self, channel_id, condition):
-        user = await self.col.find_one({'id': int(Config.ADMIN)})
-        if user:
-            channels = user.get('admin_channels', {})
-            if channel_id not in channels:
-                channels.update({f'{channel_id}': condition})
-                await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        try:
+            user = await self.col.find_one({'id': int(Config.ADMIN)})
+            if user:
+                channels = user.get('admin_channels', {})
+                if channel_id not in channels:
+                    channels.update({f'{channel_id}': condition})
+                    await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        except Exception as e:
+            logger.error(f"Error in set_admin_channel: {e}")
 
     async def update_admin_channel(self, id, condition):
-        user = await self.col.find_one({'id': int(Config.ADMIN)})
-        if user:
-            channels = user.get('admin_channels', {})
-            if id in channels:
-                channels.update({f'{id}': condition})
-                await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        try:
+            user = await self.col.find_one({'id': int(Config.ADMIN)})
+            if user:
+                channels = user.get('admin_channels', {})
+                if id in channels:
+                    channels.update({f'{id}': condition})
+                    await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        except Exception as e:
+            logger.error(f"Error in update_admin_channel: {e}")
 
     async def get_admin_channels(self):
-        user = await self.col.find_one({'id': int(Config.ADMIN)})
-        return user.get('admin_channels', {})
+        try:
+            user = await self.col.find_one({'id': int(Config.ADMIN)})
+            return user.get('admin_channels', {})
+        except Exception as e:
+            logger.error(f"Error in get_admin_channels: {e}")
+            return {}
 
     async def remove_admin_channel(self, channel_id):
-        user = await self.col.find_one({'id': int(Config.ADMIN)})
-        if user:
-            channels = user.get('admin_channels', {})
-            if channel_id in channels:
-                channels.pop(channel_id)
-                await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        try:
+            user = await self.col.find_one({'id': int(Config.ADMIN)})
+            if user:
+                channels = user.get('admin_channels', {})
+                if channel_id in channels:
+                    channels.pop(channel_id)
+                    await self.col.update_one({'id': int(Config.ADMIN)}, {'$set': {'admin_channels': channels}})
+        except Exception as e:
+            logger.error(f"Error in remove_admin_channel: {e}")
 
     async def set_channel(self, user_id, channel_id):
-        user = await self.col.find_one({'id': int(user_id)})
-        if user:
-            channels = user.get('channel', [])
-            if channel_id not in channels:
-                channels.append(channel_id)
-                await self.col.update_one({'id': int(user_id)}, {'$set': {'channel': channels}})
+        try:
+            user = await self.col.find_one({'id': int(user_id)})
+            if user:
+                channels = user.get('channel', [])
+                if channel_id not in channels:
+                    channels.append(channel_id)
+                    await self.col.update_one({'id': int(user_id)}, {'$set': {'channel': channels}})
+        except Exception as e:
+            logger.error(f"Error in set_channel: {e}")
 
     async def get_channel(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return user.get('channel', [])
+        try:
+            user = await self.col.find_one({'id': int(id)})
+            return user.get('channel', [])
+        except Exception as e:
+            logger.error(f"Error in get_channel: {e}")
+            return []
 
     async def remove_channel(self, user_id, channel_id):
-        user = await self.col.find_one({'id': int(user_id)})
-        if user:
-            channels = user.get('channel', [])
-            if channel_id in channels:
-                channels.remove(channel_id)
-                await self.col.update_one({'id': int(user_id)}, {'$set': {'channel': channels}})
+        try:
+            user = await self.col.find_one({'id': int(user_id)})
+            if user:
+                channels = user.get('channel', [])
+                if channel_id in channels:
+                    channels.remove(channel_id)
+                    await self.col.update_one({'id': int(user_id)}, {'$set': {'channel': channels}})
+        except Exception as e:
+            logger.error(f"Error in remove_channel: {e}")
 
     async def add_user(self, b, m):
-        u = m.from_user
-        if not await self.is_user_exist(u.id):
-            if u.id == Config.ADMIN:
-                user = self.admin_user(u.id)
-            else:
-                user = self.new_user(u.id)
-
-            await self.col.insert_one(user)
-            await send_log(b, u)
+        try:
+            u = m.from_user
+            if not await self.is_user_exist(u.id):
+                if u.id == Config.ADMIN:
+                    user = self.admin_user(u.id)
+                else:
+                    user = self.new_user(u.id)
+                await self.col.insert_one(user)
+                await send_log(b, u)
+        except Exception as e:
+            logger.error(f"Error in add_user: {e}")
 
     async def add_appro_user(self, b, m):
-        u = m.from_user
-        if not await self.is_user_exist(u.id):
-            user = self.approved_user(u.id)
-            await self.col.insert_one(user)
-            await send_log(b, u)
+        try:
+            u = m.from_user
+            if not await self.is_user_exist(u.id):
+                user = self.approved_user(u.id)
+                await self.col.insert_one(user)
+                await send_log(b, u)
+        except Exception as e:
+            logger.error(f"Error in add_appro_user: {e}")
 
     async def is_user_exist(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        return bool(user)
+        try:
+            user = await self.col.find_one({'id': int(id)})
+            return bool(user)
+        except Exception as e:
+            logger.error(f"Error in is_user_exist: {e}")
+            return False
 
     async def total_users_count(self):
-        count = await self.col.count_documents({})
-        return count
+        try:
+            count = await self.col.count_documents({})
+            return count
+        except Exception as e:
+            logger.error(f"Error in total_users_count: {e}")
+            return 0
 
     async def get_all_users(self):
-        all_users = self.col.find({})
-        return all_users
+        try:
+            all_users = self.col.find({})
+            return all_users
+        except Exception as e:
+            logger.error(f"Error in get_all_users: {e}")
+            return []
 
     async def delete_user(self, user_id):
-        await self.col.delete_many({'id': int(user_id)})
+        try:
+            await self.col.delete_many({'id': int(user_id)})
+        except Exception as e:
+            logger.error(f"Error in delete_user: {e}")
 
 
 db = Database(Config.DB_URL, Config.DB_NAME)
