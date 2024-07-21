@@ -1,7 +1,7 @@
 import re
 import os
 import time
-from dotenv import load_dotenv
+
 
 # Load environment variables from a .env file
 load_dotenv()
