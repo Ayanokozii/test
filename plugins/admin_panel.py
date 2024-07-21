@@ -16,9 +16,8 @@ logger.setLevel(logging.INFO)
 # User client for approving join requests (usable only by user, not bot)
 user = Client(name="User", api_id=Config.API_ID, api_hash=Config.API_HASH, session_string=Config.SESSION)
 
-
-@Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
-async def get_stats(bot, message):
+@user.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
+async def get_stats(bot: Client, message: Message):
     """Get bot statistics including uptime and total users."""
     total_users = await db.total_users_count()
     uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - Config.BOT_UPTIME))
@@ -28,21 +27,19 @@ async def get_stats(bot, message):
     time_taken_s = (end_t - start_t) * 1000
     await st.edit(text=f"**--Bot Status--** \n\n**⌚️ Bot Uptime:** {uptime} \n**🐌 Current Ping:** `{time_taken_s:.3f} ms` \n**👭 Total Users:** `{total_users}`")
 
-
-@Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
-async def restart_bot(b, m):
+@user.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
+async def restart_bot(bot: Client, message: Message):
     """Restart the bot."""
-    await m.reply_text("🔄__Restarting...__")
+    await message.reply_text("🔄__Restarting...__")
     os.execl(sys.executable, sys.executable, *sys.argv)
 
-
-@Client.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
-async def broadcast_handler(bot: Client, m: Message):
+@user.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
+async def broadcast_handler(bot: Client, message: Message):
     """Broadcast a message to all users."""
-    await bot.send_message(Config.LOG_CHANNEL, f"{m.from_user.mention} or {m.from_user.id} has started the broadcast...")
+    await bot.send_message(Config.LOG_CHANNEL, f"{message.from_user.mention} or {message.from_user.id} has started the broadcast...")
     all_users = await db.get_all_users()
-    broadcast_msg = m.reply_to_message
-    sts_msg = await m.reply_text("Broadcast started...")
+    broadcast_msg = message.reply_to_message
+    sts_msg = await message.reply_text("Broadcast started...")
     done = 0
     failed = 0
     success = 0
@@ -61,7 +58,6 @@ async def broadcast_handler(bot: Client, m: Message):
             await sts_msg.edit(f"Broadcast in progress: \nTotal Users {total_users} \nCompleted: {done} / {total_users}\nSuccess: {success}\nFailed: {failed}")
     completed_in = datetime.timedelta(seconds=int(time.time() - start_time))
     await sts_msg.edit(f"Broadcast completed: \nCompleted in `{completed_in}`.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nFailed: {failed}")
-
 
 async def send_msg(user_id, message):
     """Send a message to a user."""
@@ -84,8 +80,7 @@ async def send_msg(user_id, message):
         logger.error(f"{user_id} : {e}")
         return 500
 
-
-@Client.on_message(filters.private & filters.command('acceptall') & filters.user(Config.ADMIN))
+@user.on_message(filters.private & filters.command('acceptall') & filters.user(Config.ADMIN))
 async def handle_acceptall(bot: Client, message: Message):
     """Handle accepting all pending join requests."""
     ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
@@ -101,8 +96,7 @@ async def handle_acceptall(bot: Client, message: Message):
 
     await ms.edit("Select Channel or Group below where you want to accept pending requests\n\nBelow Channels or Group I'm Admin there", reply_markup=InlineKeyboardMarkup(button))
 
-
-@Client.on_message(filters.private & filters.command('declineall') & filters.user(Config.ADMIN))
+@user.on_message(filters.private & filters.command('declineall') & filters.user(Config.ADMIN))
 async def handle_declineall(bot: Client, message: Message):
     """Handle declining all pending join requests."""
     ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
@@ -118,8 +112,7 @@ async def handle_declineall(bot: Client, message: Message):
 
     await ms.edit("Select Channel or Group below where you want to decline pending requests\n\nBelow Channels or Group I'm Admin there", reply_markup=InlineKeyboardMarkup(button))
 
-
-@Client.on_callback_query(filters.regex('^acceptallchat_'))
+@user.on_callback_query(filters.regex('^acceptallchat_'))
 async def handle_accept_pending_request(bot: Client, update: CallbackQuery):
     """Handle accepting all pending join requests for a specific chat."""
     chat_id = update.data.split('_')[1]
@@ -138,8 +131,7 @@ async def handle_accept_pending_request(bot: Client, update: CallbackQuery):
         await ms.delete()
         await update.message.reply_text(f"**Task Completed** ✓ **Approved ✅ All Pending Join Requests**")
 
-
-@Client.on_callback_query(filters.regex('^declineallchat_'))
+@user.on_callback_query(filters.regex('^declineallchat_'))
 async def handle_decline_pending_request(bot: Client, update: CallbackQuery):
     """Handle declining all pending join requests for a specific chat."""
     ms = await update.message.edit("**Please Wait Declining all the pending requests. ♻️**")
@@ -159,8 +151,6 @@ async def handle_decline_pending_request(bot: Client, update: CallbackQuery):
         await ms.delete()
         await update.message.reply_text("**Task Completed** ✓ **Declined ❌ All The Pending Join Requests**")
 
-
 # Run the bot
-user.start()
+user.run()
 print("User client started")
-Client.run()
