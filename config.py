@@ -1,7 +1,7 @@
 import re
 import os
 import time
-from dotenv import load_dotenv
+
 class Config:
     """
     Configuration class for the bot.
