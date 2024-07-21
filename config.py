@@ -1,4 +1,3 @@
-import re
 import os
 import time
 
@@ -31,10 +30,13 @@ class Config:
     WEBHOOK = bool(os.getenv("WEBHOOK", True))
     PORT = int(os.getenv("PORT", "4040"))
 
+    # Log channel configuration
+    LOG_CHANNEL = os.getenv("LOG_CHANNEL", "-1002216123516")  # Replace with your default or placeholder value
+
     @staticmethod
     def validate():
         """Validate required configurations."""
-        required_vars = ['API_ID', 'API_HASH', 'BOT_TOKEN', 'DB_URL', 'ADMIN', 'SESSION']
+        required_vars = ['API_ID', 'API_HASH', 'BOT_TOKEN', 'DB_URL', 'ADMIN', 'SESSION', 'LOG_CHANNEL']
         for var in required_vars:
             if not getattr(Config, var):
                 raise ValueError(f"Environment variable {var} is missing!")
