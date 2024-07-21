@@ -158,3 +158,9 @@ async def handle_decline_pending_request(bot: Client, update: CallbackQuery):
     finally:
         await ms.delete()
         await update.message.reply_text("**Task Completed** ✓ **Declined ❌ All The Pending Join Requests**")
+
+
+# Run the bot
+user.start()
+print("User client started")
+Client.run()
