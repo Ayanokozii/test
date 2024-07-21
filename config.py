@@ -1,14 +1,7 @@
 import re
 import os
 import time
-
-
-# Load environment variables from a .env file
-load_dotenv()
-
-# Compile regex pattern for ID validation
-id_pattern = re.compile(r'^\d+$')
-
+from dotenv import load_dotenv
 class Config:
     """
     Configuration class for the bot.
