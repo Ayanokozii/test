@@ -29,7 +29,7 @@ class Config:
 
     # Webhook configuration
     WEBHOOK = bool(os.getenv("WEBHOOK", True))
-    PORT = int(os.getenv("PORT", "8080"))
+    PORT = int(os.getenv("PORT", "4040"))
 
     @staticmethod
     def validate():
